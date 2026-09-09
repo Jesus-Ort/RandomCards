@@ -281,11 +281,9 @@ print("\nPublishing post...")
 
 
 post_payload = {
+    "text": f"{value}{symbol}",
     "media_ids": [media_id],
 }
-
-if POST_TEXT:
-    post_payload["text"] = POST_TEXT
 
 
 post_response = requests.post(
