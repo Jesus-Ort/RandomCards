@@ -311,7 +311,7 @@ This allows the application to run without keeping a personal computer or server
 
 The workflow is configured to execute every day at:
 
-**8:00 AM Venezuela time (UTC-4)**
+**12:00 PM Venezuela time (UTC-4)**
 
 GitHub Actions uses UTC for cron schedules, so the workflow uses:
 
