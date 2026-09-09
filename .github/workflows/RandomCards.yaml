@@ -1,0 +1,68 @@
+name: Random Cards
+
+on:
+  schedule:
+    # 12:00 UTC = 08:00 AM EDT
+    - cron: "0 12 * * *"
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish-card:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ------------------------------------------------------
+      # Checkout repository
+      # ------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ------------------------------------------------------
+      # Setup Python
+      # ------------------------------------------------------
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ------------------------------------------------------
+      # Install dependencies
+      # ------------------------------------------------------
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # ------------------------------------------------------
+      # Run bot
+      # ------------------------------------------------------
+      - name: Publish daily card
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+          POST_TEXT: ""
+        run: |
+          python main.py
+
+      # ------------------------------------------------------
+      # Save history
+      # ------------------------------------------------------
+      - name: Commit history
+        run: |
+          git config user.name "daily-card-bot"
+          git config user.email "actions@github.com"
+
+          git add data/card_stats.csv
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: record daily card"
+            git push
+          fi
