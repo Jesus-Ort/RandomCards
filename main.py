@@ -4,6 +4,7 @@ import os
 import random
 import time
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from pathlib import Path
 
 import requests
@@ -190,7 +191,8 @@ draw.text(
 # SAVE IMAGE
 # ============================================================
 
-date_str = datetime.now().strftime("%d-%m-%Y")
+now = datetime.now(ZoneInfo("America/Caracas"))
+date_str = now.strftime("%d-%m-%Y")
 
 filename = f"card_{date_str}.png"
 image_path = GENERATED_DIR / filename
